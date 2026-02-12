@@ -7,7 +7,7 @@ export default function MainLayout({
 }>) {
   return (
     <>
-      <AppHeader />
+      {/* <AppHeader /> */}
       {children}
     </>
   );

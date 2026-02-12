@@ -28,7 +28,7 @@ export default function Home() {
 
         <Button
           component={Link}
-          href="/exams"
+          href="/exam"
           size="lg"
           variant="gradient"
         >
