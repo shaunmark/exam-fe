@@ -162,7 +162,7 @@ export function ExamClient() {
       gap={0}
       style={{
         minHeight: '100vh',
-        background: 'var(--mantine-color-gray-0)',
+        background: 'var(--mantine-color-body)',
       }}
     >
       {/* ── Sticky header: timer + progress ── */}
