@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import Link from 'next/link';
 import { RESULT } from '@/lib/constants';
-import { COLORS, RESULT_COLORS } from '@/lib/theme';
+import { gradients } from '@/lib/theme';
 
 interface ResultPageProps {
   params: Promise<{ attemptId: string }>;
@@ -28,7 +28,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
             size={64}
             radius="xl"
             variant="gradient"
-            gradient={RESULT_COLORS.SUCCESS_GRADIENT}
+            gradient={gradients.success}
           >
             <Text size="xl" fw={700} c="white">
               ✓
@@ -63,7 +63,6 @@ export default async function ResultPage({ params }: ResultPageProps) {
               component={Link}
               href="/"
               variant="gradient"
-              gradient={COLORS.PRIMARY_GRADIENT}
               size="md"
               fullWidth
             >

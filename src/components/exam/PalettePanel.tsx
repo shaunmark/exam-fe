@@ -7,13 +7,15 @@ import {
   Text,
   Group,
   Divider,
+  useMantineTheme,
 } from '@mantine/core';
 import { useExamStore, getQuestionStatus } from '@/store/useExamStore';
 import type { QuestionStatus } from '@/store/useExamStore';
-import { PALETTE_COLORS, PALETTE_LABELS, PALETTE_CURRENT_SHADOW } from '@/lib/theme';
 
 // ── Question navigation grid with color-coded status indicators ──
 export function PalettePanel() {
+  const { primaryColor, other } = useMantineTheme();
+
   // ── Store bindings ──
   const questions = useExamStore((s) => s.questions);
   const currentIndex = useExamStore((s) => s.currentIndex);
@@ -42,14 +44,14 @@ export function PalettePanel() {
             <Button
               key={q.id}
               size="compact-sm"
-              color={PALETTE_COLORS[status]}
+              color={other.paletteColors[status]}
               variant={isCurrent ? 'filled' : 'light'}
               onClick={() => goToQuestion(i)}
               radius="sm"
               style={{
                 fontWeight: isCurrent ? 700 : 500,
                 ...(isCurrent && {
-                  boxShadow: `0 0 0 2px var(--mantine-color-${PALETTE_CURRENT_SHADOW}-5)`,
+                  boxShadow: `0 0 0 2px var(--mantine-color-${primaryColor}-5)`,
                 }),
               }}
             >
@@ -62,19 +64,19 @@ export function PalettePanel() {
       <Divider />
 
       <Stack gap={6}>
-        {(Object.keys(PALETTE_COLORS) as QuestionStatus[]).map((status) => (
+        {(Object.keys(other.paletteColors) as QuestionStatus[]).map((status) => (
           <Group key={status} gap="xs" wrap="nowrap">
             <div
               style={{
                 width: 10,
                 height: 10,
                 borderRadius: 2,
-                backgroundColor: `var(--mantine-color-${PALETTE_COLORS[status]}-5)`,
+                backgroundColor: `var(--mantine-color-${other.paletteColors[status]}-5)`,
                 flexShrink: 0,
               }}
             />
             <Text size="xs" c="dimmed">
-              {PALETTE_LABELS[status]}
+              {other.paletteLabels[status]}
             </Text>
           </Group>
         ))}

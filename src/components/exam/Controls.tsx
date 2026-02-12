@@ -1,8 +1,7 @@
 'use client';
 
-import { Button, Group, Card } from '@mantine/core';
+import { Button, Group, Card, useMantineTheme } from '@mantine/core';
 import { useExamStore } from '@/store/useExamStore';
-import { CONTROL_COLORS } from '@/lib/theme';
 
 interface ControlsProps {
   onEndTest: () => void;
@@ -10,6 +9,8 @@ interface ControlsProps {
 
 // ── Navigation and action buttons below the question card ──
 export function Controls({ onEndTest }: ControlsProps) {
+  const { other } = useMantineTheme();
+
   // ── Store bindings ──
   const questions = useExamStore((s) => s.questions);
   const currentIndex = useExamStore((s) => s.currentIndex);
@@ -57,7 +58,7 @@ export function Controls({ onEndTest }: ControlsProps) {
           {hasAnswer && (
             <Button
               variant="subtle"
-              color={CONTROL_COLORS.CLEAR}
+              color={other.semantic.muted}
               size="sm"
               onClick={() => clearAnswer(question.id)}
             >
@@ -66,14 +67,14 @@ export function Controls({ onEndTest }: ControlsProps) {
           )}
           <Button
             variant={isMarked ? 'filled' : 'light'}
-            color={CONTROL_COLORS.MARK}
+            color={other.semantic.mark}
             size="sm"
             onClick={() => toggleMark(question.id)}
           >
             {isMarked ? 'Unmark' : 'Mark'}
           </Button>
           <Button
-            color={CONTROL_COLORS.END_TEST}
+            color={other.semantic.danger}
             variant="light"
             size="sm"
             onClick={onEndTest}

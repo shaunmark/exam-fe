@@ -11,6 +11,7 @@ import {
   Stack,
   Group,
   Drawer,
+  useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useExamStore } from '@/store/useExamStore';
@@ -21,7 +22,6 @@ import {
 } from '@/store/useExamStore';
 import { submitAttempt, SUBMIT_URL } from '@/lib/exam-api';
 import type { AnswerPayload, SubmitPayload } from '@/lib/types';
-import { FAB_COLOR, MODAL_COLORS } from '@/lib/theme';
 import { Header } from './Header';
 import { QuestionCard } from './QuestionCard';
 import { Controls } from './Controls';
@@ -36,6 +36,7 @@ function getRemainingSeconds(endsAt: string | null): number {
 // ── Main exam-taking orchestrator: timer, submit, layout, persistence ──
 export function ExamClient() {
   const router = useRouter();
+  const { other } = useMantineTheme();
 
   // ── Zustand store bindings ──
   const store = useExamStore();
@@ -257,7 +258,6 @@ export function ExamClient() {
         <>
           <Button
             variant="filled"
-            color={FAB_COLOR}
             size="compact-sm"
             radius="xl"
             onClick={openDrawer}
@@ -298,7 +298,7 @@ export function ExamClient() {
             <strong>{questions.length}</strong> questions.
           </Text>
           {questions.length - answeredCount > 0 && (
-            <Text c={MODAL_COLORS.UNANSWERED_WARNING} size="sm" fw={500}>
+            <Text c={other.semantic.warning} size="sm" fw={500}>
               {questions.length - answeredCount} question(s) unanswered.
             </Text>
           )}
@@ -317,7 +317,7 @@ export function ExamClient() {
               Go Back
             </Button>
             <Button
-              color={MODAL_COLORS.SUBMIT}
+              color={other.semantic.danger}
               size="sm"
               onClick={handleSubmit}
               loading={submitting}

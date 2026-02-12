@@ -1,95 +1,64 @@
+import { createTheme } from '@mantine/core';
 import type { QuestionStatus } from '@/store/useExamStore';
 
-// ── Centralized color configuration ──
-// Change values here to update colors across the entire application.
-// All values are Mantine color names (e.g. 'blue', 'red', 'teal').
+// ── Centralized theme configuration ──
+// Change values here to update colors and styles across the entire application.
+// All values are Mantine color keys (e.g. 'blue', 'red', 'teal').
 
-// ── Brand / Global ──
-export const COLORS = {
-  PRIMARY: 'blue',
-  PRIMARY_GRADIENT: { from: 'blue', to: 'cyan' },
-  ACCENT: 'teal',
-  DANGER: 'red',
-  WARNING: 'orange',
-  SUCCESS: 'green',
-  SUCCESS_GRADIENT: { from: 'teal', to: 'green' },
-  MUTED: 'gray',
+// ── Semantic color names for non-primary colors ──
+export const semantic = {
+  danger: 'red',
+  success: 'green',
+  warning: 'orange',
+  accent: 'teal',
+  mark: 'violet',
+  muted: 'gray',
 } as const;
 
-// ── Exam header ──
-export const HEADER_COLORS = {
-  TITLE: COLORS.PRIMARY,
-  ANSWER_COUNT_BADGE: COLORS.MUTED,
-  PROGRESS_DEFAULT: COLORS.PRIMARY,
-  PROGRESS_COMPLETE: COLORS.SUCCESS,
-  TIMER_NORMAL: COLORS.PRIMARY,
-  TIMER_URGENT: COLORS.DANGER,
-  STRIP_FILL: COLORS.PRIMARY,
-  STRIP_TRACK: COLORS.MUTED,
-} as const;
-
-// ── Question card ──
-export const QUESTION_COLORS = {
-  INDEX_BADGE: COLORS.PRIMARY,
-  ANSWERED_BADGE: COLORS.SUCCESS,
-  MARKED_BADGE: 'violet',
-  SELECTED_OPTION_BORDER: COLORS.PRIMARY,
-  SELECTED_OPTION_BG: COLORS.PRIMARY,
-} as const;
-
-// ── Controls ──
-export const CONTROL_COLORS = {
-  CLEAR: COLORS.MUTED,
-  MARK: 'violet',
-  END_TEST: COLORS.DANGER,
+// ── Gradient presets ──
+export const gradients = {
+  primary: { from: 'blue', to: 'cyan' },
+  success: { from: 'teal', to: 'green' },
 } as const;
 
 // ── Question palette: status → color mapping ──
-export const PALETTE_COLORS: Record<QuestionStatus, string> = {
-  'not-visited': COLORS.MUTED,
-  'not-answered': COLORS.DANGER,
-  answered: COLORS.SUCCESS,
-  marked: 'violet',
-  'answered-marked': COLORS.ACCENT,
-} as const;
+export const paletteColors: Record<QuestionStatus, string> = {
+  'not-visited': semantic.muted,
+  'not-answered': semantic.danger,
+  answered: semantic.success,
+  marked: semantic.mark,
+  'answered-marked': semantic.accent,
+};
 
-// ── Question palette: status → human-readable label ──
-export const PALETTE_LABELS: Record<QuestionStatus, string> = {
+// ── Question palette: status → label mapping ──
+export const paletteLabels: Record<QuestionStatus, string> = {
   'not-visited': 'Not Visited',
   'not-answered': 'Not Answered',
   answered: 'Answered',
   marked: 'Marked',
   'answered-marked': 'Ans + Marked',
-} as const;
+};
 
-// ── Palette: current question highlight ──
-export const PALETTE_CURRENT_SHADOW = COLORS.PRIMARY;
+// ── Mantine theme override — passed to MantineProvider ──
+export const theme = createTheme({
+  // Components without an explicit color prop default to this
+  primaryColor: 'blue',
 
-// ── Mobile FAB ──
-export const FAB_COLOR = COLORS.PRIMARY;
+  // Buttons with variant="gradient" auto-use this (no gradient prop needed)
+  defaultGradient: gradients.primary,
 
-// ── Modal ──
-export const MODAL_COLORS = {
-  UNANSWERED_WARNING: COLORS.WARNING,
-  SUBMIT: COLORS.DANGER,
-} as const;
+  // Shade index used for primary color in light vs dark mode
+  primaryShade: { light: 6, dark: 7 },
 
-// ── Landing page ──
-export const LANDING_COLORS = {
-  CODE_BADGE: COLORS.PRIMARY,
-  STAT_QUESTIONS: COLORS.PRIMARY,
-  STAT_DURATION: COLORS.WARNING,
-  ERROR: COLORS.DANGER,
-} as const;
+  // Global default border-radius for components
+  defaultRadius: 'md',
 
-// ── Home page ──
-export const HOME_COLORS = {
-  BADGE_FREE: COLORS.ACCENT,
-  BADGE_QUESTIONS: COLORS.PRIMARY,
-  BADGE_DURATION: COLORS.WARNING,
-} as const;
-
-// ── Result page ──
-export const RESULT_COLORS = {
-  SUCCESS_GRADIENT: COLORS.SUCCESS_GRADIENT,
-} as const;
+  // App-specific values accessible via useMantineTheme().other
+  // or imported directly in server components
+  other: {
+    semantic,
+    gradients,
+    paletteColors,
+    paletteLabels,
+  },
+});

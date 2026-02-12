@@ -1,12 +1,13 @@
 'use client';
 
-import { Card, Text, Badge, Group, Divider, Stack } from '@mantine/core';
+import { Card, Text, Badge, Group, Divider, Stack, useMantineTheme } from '@mantine/core';
 import { useExamStore } from '@/store/useExamStore';
-import { QUESTION_COLORS } from '@/lib/theme';
 import { Options } from './Options';
 
 // ── Displays the current question text, options, and marked-for-review badge ──
 export function QuestionCard() {
+  const { other } = useMantineTheme();
+
   // ── Store bindings (individual selectors to minimize re-renders) ──
   const questions = useExamStore((s) => s.questions);
   const currentIndex = useExamStore((s) => s.currentIndex);
@@ -28,7 +29,6 @@ export function QuestionCard() {
           <Group gap="xs">
             <Badge
               variant="filled"
-              color={QUESTION_COLORS.INDEX_BADGE}
               size="lg"
               radius="sm"
               style={{ minWidth: 40, textAlign: 'center' }}
@@ -41,12 +41,12 @@ export function QuestionCard() {
           </Group>
           <Group gap="xs">
             {hasAnswer && (
-              <Badge color={QUESTION_COLORS.ANSWERED_BADGE} variant="light" size="sm" radius="sm">
+              <Badge color={other.semantic.success} variant="light" size="sm" radius="sm">
                 Answered
               </Badge>
             )}
             {isMarked && (
-              <Badge color={QUESTION_COLORS.MARKED_BADGE} variant="light" size="sm" radius="sm">
+              <Badge color={other.semantic.mark} variant="light" size="sm" radius="sm">
                 Marked
               </Badge>
             )}

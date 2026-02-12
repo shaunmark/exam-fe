@@ -1,8 +1,7 @@
 'use client';
 
-import { Radio, Stack, Card, Text, Group } from '@mantine/core';
+import { Radio, Stack, Card, Text, Group, useMantineTheme } from '@mantine/core';
 import type { ExamOption } from '@/lib/types';
-import { QUESTION_COLORS } from '@/lib/theme';
 
 interface OptionsProps {
   options: ExamOption[];
@@ -12,6 +11,8 @@ interface OptionsProps {
 
 // ── Radio group for answer options — controlled by parent via props ──
 export function Options({ options, selectedOptionId, onSelect }: OptionsProps) {
+  const { primaryColor } = useMantineTheme();
+
   return (
     <Radio.Group
       value={selectedOptionId ?? ''}
@@ -29,10 +30,10 @@ export function Options({ options, selectedOptionId, onSelect }: OptionsProps) {
               style={{
                 cursor: 'pointer',
                 borderColor: isSelected
-                  ? `var(--mantine-color-${QUESTION_COLORS.SELECTED_OPTION_BORDER}-5)`
+                  ? `var(--mantine-color-${primaryColor}-5)`
                   : undefined,
                 background: isSelected
-                  ? `var(--mantine-color-${QUESTION_COLORS.SELECTED_OPTION_BG}-0)`
+                  ? `var(--mantine-color-${primaryColor}-0)`
                   : undefined,
               }}
               onClick={() => onSelect(opt.id)}

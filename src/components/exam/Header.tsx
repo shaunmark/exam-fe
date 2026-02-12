@@ -1,8 +1,7 @@
 'use client';
 
-import { Group, Text, Badge, Progress, Stack } from '@mantine/core';
+import { Group, Text, Badge, Progress, Stack, useMantineTheme } from '@mantine/core';
 import { useExamStore } from '@/store/useExamStore';
-import { HEADER_COLORS } from '@/lib/theme';
 
 interface HeaderProps {
   remainingSeconds: number;
@@ -10,6 +9,7 @@ interface HeaderProps {
 
 // ── Sticky exam header: shows answer count, progress bar, and countdown timer ──
 export function Header({ remainingSeconds }: HeaderProps) {
+  const { primaryColor, other } = useMantineTheme();
   const questions = useExamStore((s) => s.questions);
   const answers = useExamStore((s) => s.answers);
 
@@ -39,10 +39,10 @@ export function Header({ remainingSeconds }: HeaderProps) {
         }}
       >
         <Group gap="md">
-          <Text fw={700} size="md" c={HEADER_COLORS.TITLE}>
+          <Text fw={700} size="md" c={primaryColor}>
             Exam
           </Text>
-          <Badge variant="light" color={HEADER_COLORS.ANSWER_COUNT_BADGE} size="sm" radius="sm">
+          <Badge variant="light" color={other.semantic.muted} size="sm" radius="sm">
             {answered} of {total} answered
           </Badge>
         </Group>
@@ -51,12 +51,12 @@ export function Header({ remainingSeconds }: HeaderProps) {
           <Progress
             value={progressPct}
             size="sm"
-            color={progressPct === 100 ? HEADER_COLORS.PROGRESS_COMPLETE : HEADER_COLORS.PROGRESS_DEFAULT}
+            color={progressPct === 100 ? other.semantic.success : undefined}
             radius="xl"
             style={{ width: 120 }}
           />
           <Badge
-            color={isUrgent ? HEADER_COLORS.TIMER_URGENT : HEADER_COLORS.TIMER_NORMAL}
+            color={isUrgent ? other.semantic.danger : undefined}
             variant={isUrgent ? 'filled' : 'light'}
             size="lg"
             radius="sm"
@@ -73,7 +73,7 @@ export function Header({ remainingSeconds }: HeaderProps) {
       <div
         style={{
           height: 2,
-          background: `linear-gradient(90deg, var(--mantine-color-${HEADER_COLORS.STRIP_FILL}-5) ${progressPct}%, var(--mantine-color-${HEADER_COLORS.STRIP_TRACK}-2) ${progressPct}%)`,
+          background: `linear-gradient(90deg, var(--mantine-color-${primaryColor}-5) ${progressPct}%, var(--mantine-color-${other.semantic.muted}-2) ${progressPct}%)`,
         }}
       />
     </Stack>
