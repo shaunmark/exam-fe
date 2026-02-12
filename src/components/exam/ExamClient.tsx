@@ -55,6 +55,7 @@ export function ExamClient() {
   const [remainingSeconds, setRemainingSeconds] = useState(() =>
     getRemainingSeconds(endsAt),
   );
+  const [timerReady, setTimerReady] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [modalOpened, { open: openModal, close: closeModal }] =
@@ -109,6 +110,7 @@ export function ExamClient() {
     };
 
     tick();
+    setTimerReady(true);
     const intervalId = setInterval(tick, 1000);
     return () => clearInterval(intervalId);
   }, [endsAt]);
@@ -140,12 +142,13 @@ export function ExamClient() {
     }
   }, [attemptId, questions, answers, markedForReview, markSubmitted, reset, router]);
 
-  // ── Auto-submit on timer expiry ──
+  // ── Auto-submit on timer expiry (only after timer has initialized) ──
   useEffect(() => {
+    if (!timerReady) return;
     if (remainingSeconds <= 0 && attemptId && !submitted && !submittedRef.current) {
       handleSubmit();
     }
-  }, [remainingSeconds, attemptId, submitted, handleSubmit]);
+  }, [timerReady, remainingSeconds, attemptId, submitted, handleSubmit]);
 
   // ── Guard: no exam loaded ──
   if (!attemptId || questions.length === 0) {
