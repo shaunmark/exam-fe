@@ -14,6 +14,11 @@ import type {
 // ── Toggle mock mode: set to true to bypass real backend ──
 const USE_MOCKS = true;
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+
+// ── Full submit endpoint URL (used by sendBeacon for tab-close submission) ──
+export const SUBMIT_URL = `${BASE_URL}/attempt/submit`;
+
 // ── Fetch exam metadata by its unique code ──
 export function fetchExamByCode(code: string): Promise<ExamMeta> {
   if (USE_MOCKS) return mockFetchExamByCode(code);

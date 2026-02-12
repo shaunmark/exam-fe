@@ -19,8 +19,8 @@ import {
   restoreFromSession,
   clearSession,
 } from '@/store/useExamStore';
-import { submitAttempt } from '@/lib/exam-api';
-import type { AnswerPayload } from '@/lib/types';
+import { submitAttempt, SUBMIT_URL } from '@/lib/exam-api';
+import type { AnswerPayload, SubmitPayload } from '@/lib/types';
 import { FAB_COLOR, MODAL_COLORS } from '@/lib/theme';
 import { Header } from './Header';
 import { QuestionCard } from './QuestionCard';
@@ -149,6 +149,62 @@ export function ExamClient() {
       handleSubmit();
     }
   }, [timerReady, remainingSeconds, attemptId, submitted, handleSubmit]);
+
+  // ── Option 1: Warn user before closing/navigating away during active exam ──
+  useEffect(() => {
+    if (!attemptId || submitted) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [attemptId, submitted]);
+
+  // ── Option 2: Fire-and-forget beacon submit when tab is closed/hidden ──
+  useEffect(() => {
+    if (!attemptId || submitted) return;
+
+    const beaconSubmit = () => {
+      // Read latest state directly from Zustand (React state may be stale)
+      const state = useExamStore.getState();
+      if (!state.attemptId || state.submitted || submittedRef.current) return;
+
+      const payload: SubmitPayload = {
+        attemptId: state.attemptId,
+        answers: state.questions.map((q) => ({
+          questionId: q.id,
+          selectedOption: state.answers[q.id] ?? '',
+          isMarkedForReview: state.markedForReview.includes(q.id),
+        })),
+      };
+
+      const blob = new Blob([JSON.stringify(payload)], {
+        type: 'application/json',
+      });
+      navigator.sendBeacon(SUBMIT_URL, blob);
+    };
+
+    // visibilitychange is more reliable on mobile than beforeunload
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        beaconSubmit();
+      }
+    };
+
+    // beforeunload as fallback for desktop browsers
+    const handleBeforeUnload = () => {
+      beaconSubmit();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [attemptId, submitted]);
 
   // ── Guard: no exam loaded ──
   if (!attemptId || questions.length === 0) {
