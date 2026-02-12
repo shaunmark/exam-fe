@@ -21,6 +21,7 @@ import {
 } from '@/store/useExamStore';
 import { submitAttempt } from '@/lib/exam-api';
 import type { AnswerPayload } from '@/lib/types';
+import { FAB_COLOR, MODAL_COLORS } from '@/lib/theme';
 import { Header } from './Header';
 import { QuestionCard } from './QuestionCard';
 import { Controls } from './Controls';
@@ -157,14 +158,20 @@ export function ExamClient() {
   const paletteContent = <PalettePanel />;
 
   return (
-    <Stack gap={0} style={{ minHeight: '100vh' }}>
+    <Stack
+      gap={0}
+      style={{
+        minHeight: '100vh',
+        background: 'var(--mantine-color-gray-0)',
+      }}
+    >
       {/* ── Sticky header: timer + progress ── */}
       <Header remainingSeconds={remainingSeconds} />
 
       {/* ── Main content: question + controls (left) and palette (right) ── */}
-      <Grid gutter="md" p="md" style={{ flex: 1 }}>
+      <Grid gutter="lg" p="lg" style={{ flex: 1 }}>
         <Grid.Col span={{ base: 12, md: 9 }}>
-          <Stack gap="md">
+          <Stack gap="sm">
             <QuestionCard />
             <Controls onEndTest={openModal} />
           </Stack>
@@ -173,7 +180,13 @@ export function ExamClient() {
         {/* ── Desktop: palette sidebar ── */}
         {!isMobile && (
           <Grid.Col span={{ base: 12, md: 3 }}>
-            <Card shadow="sm" padding="md" radius="md" withBorder>
+            <Card
+              shadow="sm"
+              padding="md"
+              radius="md"
+              withBorder
+              style={{ position: 'sticky', top: 60 }}
+            >
               {paletteContent}
             </Card>
           </Grid.Col>
@@ -184,10 +197,18 @@ export function ExamClient() {
       {isMobile && (
         <>
           <Button
-            variant="light"
-            size="xs"
+            variant="filled"
+            color={FAB_COLOR}
+            size="compact-sm"
+            radius="xl"
             onClick={openDrawer}
-            style={{ position: 'fixed', bottom: 16, right: 16, zIndex: 50 }}
+            style={{
+              position: 'fixed',
+              bottom: 20,
+              right: 20,
+              zIndex: 50,
+              boxShadow: 'var(--mantine-shadow-md)',
+            }}
           >
             Palette
           </Button>
@@ -197,6 +218,7 @@ export function ExamClient() {
             position="bottom"
             size="60%"
             title="Question Palette"
+            radius="md"
           >
             {paletteContent}
           </Drawer>
@@ -209,15 +231,16 @@ export function ExamClient() {
         onClose={closeModal}
         title="Submit Exam"
         centered
+        radius="md"
       >
         <Stack gap="md">
-          <Text>
+          <Text size="sm">
             You have answered <strong>{answeredCount}</strong> out of{' '}
             <strong>{questions.length}</strong> questions.
           </Text>
           {questions.length - answeredCount > 0 && (
-            <Text c="orange" size="sm">
-              {questions.length - answeredCount} question(s) are unanswered.
+            <Text c={MODAL_COLORS.UNANSWERED_WARNING} size="sm" fw={500}>
+              {questions.length - answeredCount} question(s) unanswered.
             </Text>
           )}
           {submitError && (
@@ -225,12 +248,18 @@ export function ExamClient() {
               {submitError}
             </Text>
           )}
-          <Group justify="flex-end" gap="sm">
-            <Button variant="default" onClick={closeModal} disabled={submitting}>
+          <Group justify="flex-end" gap="xs">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={closeModal}
+              disabled={submitting}
+            >
               Go Back
             </Button>
             <Button
-              color="red"
+              color={MODAL_COLORS.SUBMIT}
+              size="sm"
               onClick={handleSubmit}
               loading={submitting}
             >

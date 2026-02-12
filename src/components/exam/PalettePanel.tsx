@@ -1,26 +1,16 @@
 'use client';
 
-import { SimpleGrid, Button, Stack, Text, Group, Badge } from '@mantine/core';
+import {
+  SimpleGrid,
+  Button,
+  Stack,
+  Text,
+  Group,
+  Divider,
+} from '@mantine/core';
 import { useExamStore, getQuestionStatus } from '@/store/useExamStore';
 import type { QuestionStatus } from '@/store/useExamStore';
-
-// ── Color mapping: question status → Mantine color name ──
-const STATUS_COLORS: Record<QuestionStatus, string> = {
-  'not-visited': 'gray',
-  'not-answered': 'red',
-  answered: 'green',
-  marked: 'violet',
-  'answered-marked': 'teal',
-};
-
-// ── Human-readable labels for the legend ──
-const STATUS_LABELS: Record<QuestionStatus, string> = {
-  'not-visited': 'Not Visited',
-  'not-answered': 'Not Answered',
-  answered: 'Answered',
-  marked: 'Marked',
-  'answered-marked': 'Answered & Marked',
-};
+import { PALETTE_COLORS, PALETTE_LABELS, PALETTE_CURRENT_SHADOW } from '@/lib/theme';
 
 // ── Question navigation grid with color-coded status indicators ──
 export function PalettePanel() {
@@ -33,12 +23,12 @@ export function PalettePanel() {
   const goToQuestion = useExamStore((s) => s.goToQuestion);
 
   return (
-    <Stack gap="md">
-      <Text fw={600} size="sm">
-        Question Palette
+    <Stack gap="sm">
+      <Text fw={700} size="sm">
+        Questions
       </Text>
 
-      <SimpleGrid cols={5} spacing="xs">
+      <SimpleGrid cols={5} spacing={6}>
         {questions.map((q, i) => {
           const status = getQuestionStatus(
             q.id,
@@ -52,14 +42,16 @@ export function PalettePanel() {
             <Button
               key={q.id}
               size="compact-sm"
-              color={STATUS_COLORS[status]}
+              color={PALETTE_COLORS[status]}
               variant={isCurrent ? 'filled' : 'light'}
               onClick={() => goToQuestion(i)}
-              style={
-                isCurrent
-                  ? { outline: '2px solid var(--mantine-color-blue-5)' }
-                  : undefined
-              }
+              radius="sm"
+              style={{
+                fontWeight: isCurrent ? 700 : 500,
+                ...(isCurrent && {
+                  boxShadow: `0 0 0 2px var(--mantine-color-${PALETTE_CURRENT_SHADOW}-5)`,
+                }),
+              }}
             >
               {i + 1}
             </Button>
@@ -67,22 +59,25 @@ export function PalettePanel() {
         })}
       </SimpleGrid>
 
-      <Stack gap={4}>
-        <Text fw={500} size="xs" c="dimmed">
-          Legend
-        </Text>
-        <Group gap="xs" wrap="wrap">
-          {(Object.keys(STATUS_COLORS) as QuestionStatus[]).map((status) => (
-            <Badge
-              key={status}
-              color={STATUS_COLORS[status]}
-              variant="light"
-              size="xs"
-            >
-              {STATUS_LABELS[status]}
-            </Badge>
-          ))}
-        </Group>
+      <Divider />
+
+      <Stack gap={6}>
+        {(Object.keys(PALETTE_COLORS) as QuestionStatus[]).map((status) => (
+          <Group key={status} gap="xs" wrap="nowrap">
+            <div
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: 2,
+                backgroundColor: `var(--mantine-color-${PALETTE_COLORS[status]}-5)`,
+                flexShrink: 0,
+              }}
+            />
+            <Text size="xs" c="dimmed">
+              {PALETTE_LABELS[status]}
+            </Text>
+          </Group>
+        ))}
       </Stack>
     </Stack>
   );

@@ -19,6 +19,7 @@ import { startAttempt } from '@/lib/exam-api';
 import { useExamStore } from '@/store/useExamStore';
 import type { ExamMeta } from '@/lib/types';
 import { EXAM_LANDING } from '@/lib/constants';
+import { COLORS, LANDING_COLORS } from '@/lib/theme';
 
 interface ExamLandingProps {
   code: string;
@@ -55,7 +56,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
   if (error || !exam) {
     return (
       <Container size="sm" py={80}>
-        <Alert color="red" title="Error" radius="md">
+        <Alert color={LANDING_COLORS.ERROR} title="Error" radius="md">
           {error ?? EXAM_LANDING.ERROR_NOT_FOUND}
         </Alert>
       </Container>
@@ -66,7 +67,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
     <Container size="sm" py={80}>
       <Stack gap="xl" align="center">
         <Stack align="center" gap="xs">
-          <Badge variant="light" color="blue" size="lg" radius="sm">
+          <Badge variant="light" color={LANDING_COLORS.CODE_BADGE} size="lg" radius="sm">
             Exam Code: {exam.code}
           </Badge>
           <Title order={1} ta="center">
@@ -81,7 +82,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
           <Stack gap="lg">
             <Group justify="center" gap="lg">
               <Stack align="center" gap={2}>
-                <Text size="xl" fw={700} c="blue">
+                <Text size="xl" fw={700} c={LANDING_COLORS.STAT_QUESTIONS}>
                   {exam.totalQuestions}
                 </Text>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
@@ -90,7 +91,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
               </Stack>
               <Divider orientation="vertical" />
               <Stack align="center" gap={2}>
-                <Text size="xl" fw={700} c="orange">
+                <Text size="xl" fw={700} c={LANDING_COLORS.STAT_DURATION}>
                   {exam.durationMinutes}
                 </Text>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
@@ -115,7 +116,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
             <Divider />
 
             {startError && (
-              <Alert color="red" title="Error" radius="md">
+              <Alert color={LANDING_COLORS.ERROR} title="Error" radius="md">
                 {startError}
               </Alert>
             )}
@@ -126,7 +127,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
               loading={loading}
               fullWidth
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan' }}
+              gradient={COLORS.PRIMARY_GRADIENT}
             >
               {EXAM_LANDING.START_CTA}
             </Button>

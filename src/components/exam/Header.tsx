@@ -1,7 +1,8 @@
 'use client';
 
-import { Group, Text, Badge, Progress } from '@mantine/core';
+import { Group, Text, Badge, Progress, Stack } from '@mantine/core';
 import { useExamStore } from '@/store/useExamStore';
+import { HEADER_COLORS } from '@/lib/theme';
 
 interface HeaderProps {
   remainingSeconds: number;
@@ -24,41 +25,57 @@ export function Header({ remainingSeconds }: HeaderProps) {
   const isUrgent = remainingSeconds <= 60;
 
   return (
-    <Group
-      justify="space-between"
-      align="center"
-      px="md"
-      py="sm"
-      style={{
-        borderBottom: '1px solid var(--mantine-color-gray-3)',
-        background: 'var(--mantine-color-body)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-      }}
-    >
-      <Group gap="sm">
-        <Text fw={600} size="sm">
-          Exam
-        </Text>
-        <Badge variant="light" size="sm">
-          {answered}/{total} answered
-        </Badge>
-      </Group>
-
-      <Progress
-        value={progressPct}
-        size="sm"
-        style={{ flex: 1, maxWidth: 200 }}
-      />
-
-      <Badge
-        color={isUrgent ? 'red' : 'blue'}
-        variant="filled"
-        size="lg"
+    <Stack gap={0}>
+      <Group
+        justify="space-between"
+        align="center"
+        px="lg"
+        py="sm"
+        style={{
+          background: 'var(--mantine-color-body)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+        }}
       >
-        {timeStr}
-      </Badge>
-    </Group>
+        <Group gap="md">
+          <Text fw={700} size="md" c={HEADER_COLORS.TITLE}>
+            Exam
+          </Text>
+          <Badge variant="light" color={HEADER_COLORS.ANSWER_COUNT_BADGE} size="sm" radius="sm">
+            {answered} of {total} answered
+          </Badge>
+        </Group>
+
+        <Group gap="md">
+          <Progress
+            value={progressPct}
+            size="sm"
+            color={progressPct === 100 ? HEADER_COLORS.PROGRESS_COMPLETE : HEADER_COLORS.PROGRESS_DEFAULT}
+            radius="xl"
+            style={{ width: 120 }}
+          />
+          <Badge
+            color={isUrgent ? HEADER_COLORS.TIMER_URGENT : HEADER_COLORS.TIMER_NORMAL}
+            variant={isUrgent ? 'filled' : 'light'}
+            size="lg"
+            radius="sm"
+            style={{
+              fontVariantNumeric: 'tabular-nums',
+              minWidth: 72,
+              textAlign: 'center',
+            }}
+          >
+            {timeStr}
+          </Badge>
+        </Group>
+      </Group>
+      <div
+        style={{
+          height: 2,
+          background: `linear-gradient(90deg, var(--mantine-color-${HEADER_COLORS.STRIP_FILL}-5) ${progressPct}%, var(--mantine-color-${HEADER_COLORS.STRIP_TRACK}-2) ${progressPct}%)`,
+        }}
+      />
+    </Stack>
   );
 }

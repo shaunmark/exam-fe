@@ -11,13 +11,14 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 import { HOME } from "@/lib/constants";
+import { COLORS, HOME_COLORS } from "@/lib/theme";
 
 export default function Home() {
   return (
     <Container size="sm" py={80}>
       <Stack align="center" gap="xl">
         <Stack align="center" gap="xs">
-          <ThemeIcon size={64} radius="xl" variant="gradient" gradient={{ from: "blue", to: "cyan" }}>
+          <ThemeIcon size={64} radius="xl" variant="gradient" gradient={COLORS.PRIMARY_GRADIENT}>
             <Text size="xl" fw={700} c="white">{HOME.TITLE[0]}</Text>
           </ThemeIcon>
           <Title order={1} ta="center">
@@ -37,14 +38,14 @@ export default function Home() {
                   {HOME.DEMO_CARD_DESCRIPTION}
                 </Text>
               </Stack>
-              <Badge variant="light" color="teal" size="lg">
+              <Badge variant="light" color={HOME_COLORS.BADGE_FREE} size="lg">
                 {HOME.DEMO_CARD_BADGE}
               </Badge>
             </Group>
 
             <Group gap="xs">
-              <Badge variant="dot" color="blue">{HOME.DEMO_CARD_QUESTIONS}</Badge>
-              <Badge variant="dot" color="orange">{HOME.DEMO_CARD_DURATION}</Badge>
+              <Badge variant="dot" color={HOME_COLORS.BADGE_QUESTIONS}>{HOME.DEMO_CARD_QUESTIONS}</Badge>
+              <Badge variant="dot" color={HOME_COLORS.BADGE_DURATION}>{HOME.DEMO_CARD_DURATION}</Badge>
             </Group>
 
             <Button
@@ -52,7 +53,7 @@ export default function Home() {
               href="/exam/DEMO2025"
               size="md"
               variant="gradient"
-              gradient={{ from: "blue", to: "cyan" }}
+              gradient={COLORS.PRIMARY_GRADIENT}
               fullWidth
             >
               {HOME.DEMO_CTA}
