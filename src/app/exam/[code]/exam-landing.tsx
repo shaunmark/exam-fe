@@ -12,10 +12,13 @@ import {
   Group,
   Badge,
   Alert,
+  Divider,
+  List,
 } from '@mantine/core';
 import { startAttempt } from '@/lib/exam-api';
 import { useExamStore } from '@/store/useExamStore';
 import type { ExamMeta } from '@/lib/types';
+import { EXAM_LANDING } from '@/lib/constants';
 
 interface ExamLandingProps {
   code: string;
@@ -43,7 +46,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
       });
       router.push(`/exam/${code}/take`);
     } catch {
-      setStartError('Failed to start the exam. Please try again.');
+      setStartError(EXAM_LANDING.ERROR_START_FAILED);
     } finally {
       setLoading(false);
     }
@@ -51,46 +54,89 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
 
   if (error || !exam) {
     return (
-      <Container size="sm" py="xl">
-        <Alert color="red" title="Error">
-          {error ?? 'Exam not found.'}
+      <Container size="sm" py={80}>
+        <Alert color="red" title="Error" radius="md">
+          {error ?? EXAM_LANDING.ERROR_NOT_FOUND}
         </Alert>
       </Container>
     );
   }
 
   return (
-    <Container size="sm" py="xl">
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Stack gap="md">
-          <Title order={2}>{exam.title}</Title>
-          <Text c="dimmed">{exam.description}</Text>
-
-          <Group gap="sm">
-            <Badge variant="light" color="blue">
-              {exam.totalQuestions} Questions
-            </Badge>
-            <Badge variant="light" color="teal">
-              {exam.durationMinutes} Minutes
-            </Badge>
-          </Group>
-
-          {startError && (
-            <Alert color="red" title="Error">
-              {startError}
-            </Alert>
-          )}
-
-          <Button
-            size="lg"
-            onClick={handleStart}
-            loading={loading}
-            fullWidth
-          >
-            Start Exam
-          </Button>
+    <Container size="sm" py={80}>
+      <Stack gap="xl" align="center">
+        <Stack align="center" gap="xs">
+          <Badge variant="light" color="blue" size="lg" radius="sm">
+            Exam Code: {exam.code}
+          </Badge>
+          <Title order={1} ta="center">
+            {exam.title}
+          </Title>
+          <Text c="dimmed" ta="center" maw={440} size="md">
+            {exam.description}
+          </Text>
         </Stack>
-      </Card>
+
+        <Card w="100%" shadow="sm" padding="xl" radius="md" withBorder>
+          <Stack gap="lg">
+            <Group justify="center" gap="lg">
+              <Stack align="center" gap={2}>
+                <Text size="xl" fw={700} c="blue">
+                  {exam.totalQuestions}
+                </Text>
+                <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
+                  {EXAM_LANDING.STAT_QUESTIONS}
+                </Text>
+              </Stack>
+              <Divider orientation="vertical" />
+              <Stack align="center" gap={2}>
+                <Text size="xl" fw={700} c="orange">
+                  {exam.durationMinutes}
+                </Text>
+                <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
+                  {EXAM_LANDING.STAT_MINUTES}
+                </Text>
+              </Stack>
+            </Group>
+
+            <Divider />
+
+            <Stack gap="xs">
+              <Text fw={600} size="sm">
+                {EXAM_LANDING.INSTRUCTIONS_TITLE}
+              </Text>
+              <List spacing="xs" size="sm" c="dimmed">
+                {EXAM_LANDING.INSTRUCTIONS.map((text, i) => (
+                  <List.Item key={i}>{text}</List.Item>
+                ))}
+              </List>
+            </Stack>
+
+            <Divider />
+
+            {startError && (
+              <Alert color="red" title="Error" radius="md">
+                {startError}
+              </Alert>
+            )}
+
+            <Button
+              size="lg"
+              onClick={handleStart}
+              loading={loading}
+              fullWidth
+              variant="gradient"
+              gradient={{ from: 'blue', to: 'cyan' }}
+            >
+              {EXAM_LANDING.START_CTA}
+            </Button>
+
+            <Text size="xs" c="dimmed" ta="center">
+              {EXAM_LANDING.TIMER_WARNING}
+            </Text>
+          </Stack>
+        </Card>
+      </Stack>
     </Container>
   );
 }

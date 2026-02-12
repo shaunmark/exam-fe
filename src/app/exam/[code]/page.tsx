@@ -1,4 +1,5 @@
 import { fetchExamByCode } from '@/lib/exam-api';
+import { EXAM_LANDING } from '@/lib/constants';
 import { ExamLanding } from './exam-landing';
 
 interface ExamPageProps {
@@ -14,7 +15,7 @@ export default async function ExamPage({ params }: ExamPageProps) {
   try {
     exam = await fetchExamByCode(code);
   } catch {
-    error = 'Failed to load exam. Please check the exam code and try again.';
+    error = EXAM_LANDING.ERROR_LOAD_FAILED;
   }
 
   if (error || !exam) {
