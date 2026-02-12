@@ -7,14 +7,17 @@ interface HeaderProps {
   remainingSeconds: number;
 }
 
+// ── Sticky exam header: shows answer count, progress bar, and countdown timer ──
 export function Header({ remainingSeconds }: HeaderProps) {
   const questions = useExamStore((s) => s.questions);
   const answers = useExamStore((s) => s.answers);
 
+  // ── Derived values ──
   const total = questions.length;
   const answered = Object.keys(answers).length;
   const progressPct = total > 0 ? (answered / total) * 100 : 0;
 
+  // ── Format time as MM:SS, turns red when <= 60s ──
   const mins = Math.max(0, Math.floor(remainingSeconds / 60));
   const secs = Math.max(0, remainingSeconds % 60);
   const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;

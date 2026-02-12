@@ -4,7 +4,9 @@ import { Card, Text, Badge, Group } from '@mantine/core';
 import { useExamStore } from '@/store/useExamStore';
 import { Options } from './Options';
 
+// ── Displays the current question text, options, and marked-for-review badge ──
 export function QuestionCard() {
+  // ── Store bindings (individual selectors to minimize re-renders) ──
   const questions = useExamStore((s) => s.questions);
   const currentIndex = useExamStore((s) => s.currentIndex);
   const answers = useExamStore((s) => s.answers);
@@ -14,6 +16,7 @@ export function QuestionCard() {
   const question = questions[currentIndex];
   if (!question) return null;
 
+  // ── Derived: check if this question is flagged for review ──
   const isMarked = markedForReview.includes(question.id);
 
   return (

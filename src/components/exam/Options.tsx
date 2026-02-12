@@ -9,6 +9,7 @@ interface OptionsProps {
   onSelect: (optionId: string) => void;
 }
 
+// ── Radio group for answer options — controlled by parent via props ──
 export function Options({ options, selectedOptionId, onSelect }: OptionsProps) {
   return (
     <Radio.Group

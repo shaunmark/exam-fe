@@ -7,7 +7,9 @@ interface ControlsProps {
   onEndTest: () => void;
 }
 
+// ── Navigation and action buttons below the question card ──
 export function Controls({ onEndTest }: ControlsProps) {
+  // ── Store bindings ──
   const questions = useExamStore((s) => s.questions);
   const currentIndex = useExamStore((s) => s.currentIndex);
   const answers = useExamStore((s) => s.answers);
@@ -20,6 +22,7 @@ export function Controls({ onEndTest }: ControlsProps) {
   const question = questions[currentIndex];
   if (!question) return null;
 
+  // ── Derived flags for button states ──
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === questions.length - 1;
   const hasAnswer = question.id in answers;

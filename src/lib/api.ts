@@ -1,11 +1,14 @@
 import { ApiError } from './types';
 
+// ── Base URL from environment, falls back to localhost for local dev ──
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
+// ── Custom fetch options: allows `body` to be any serializable value ──
 interface FetchOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;
 }
 
+// ── Generic fetch wrapper: handles JSON serialization, errors, and typing ──
 export async function apiFetch<T>(
   path: string,
   options: FetchOptions = {},

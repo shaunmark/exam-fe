@@ -4,6 +4,7 @@ import { SimpleGrid, Button, Stack, Text, Group, Badge } from '@mantine/core';
 import { useExamStore, getQuestionStatus } from '@/store/useExamStore';
 import type { QuestionStatus } from '@/store/useExamStore';
 
+// ── Color mapping: question status → Mantine color name ──
 const STATUS_COLORS: Record<QuestionStatus, string> = {
   'not-visited': 'gray',
   'not-answered': 'red',
@@ -12,6 +13,7 @@ const STATUS_COLORS: Record<QuestionStatus, string> = {
   'answered-marked': 'teal',
 };
 
+// ── Human-readable labels for the legend ──
 const STATUS_LABELS: Record<QuestionStatus, string> = {
   'not-visited': 'Not Visited',
   'not-answered': 'Not Answered',
@@ -20,7 +22,9 @@ const STATUS_LABELS: Record<QuestionStatus, string> = {
   'answered-marked': 'Answered & Marked',
 };
 
+// ── Question navigation grid with color-coded status indicators ──
 export function PalettePanel() {
+  // ── Store bindings ──
   const questions = useExamStore((s) => s.questions);
   const currentIndex = useExamStore((s) => s.currentIndex);
   const answers = useExamStore((s) => s.answers);

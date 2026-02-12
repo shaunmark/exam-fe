@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import type { ExamQuestion } from '@/lib/types';
 
-// ── Serializable state (Sets stored as arrays for sessionStorage compat) ──
+// ── Serializable state (arrays instead of Sets for sessionStorage compat) ──
 
+// All fields must be JSON-serializable for session persistence
 interface ExamState {
   attemptId: string | null;
   endsAt: string | null;
@@ -14,6 +15,7 @@ interface ExamState {
   submitted: boolean;
 }
 
+// ── Store actions: all mutations go through these functions ──
 interface ExamActions {
   initialize: (payload: {
     attemptId: string;
@@ -33,6 +35,7 @@ interface ExamActions {
 
 export type ExamStore = ExamState & ExamActions;
 
+// ── Default empty state used on first load and after reset ──
 const initialState: ExamState = {
   attemptId: null,
   endsAt: null,
@@ -44,9 +47,11 @@ const initialState: ExamState = {
   submitted: false,
 };
 
+// ── Zustand store: single source of truth for exam-taking state ──
 export const useExamStore = create<ExamStore>()((set, get) => ({
   ...initialState,
 
+  // Reset state and load fresh exam data from the start-attempt response
   initialize: ({ attemptId, endsAt, questions }) => {
     const firstQuestionId = questions[0]?.id;
     set({
@@ -58,12 +63,14 @@ export const useExamStore = create<ExamStore>()((set, get) => ({
     });
   },
 
+  // Record the user's selected option for a question
   selectAnswer: (questionId, optionId) => {
     set((s) => ({
       answers: { ...s.answers, [questionId]: optionId },
     }));
   },
 
+  // Remove a previously selected answer (destructured delete)
   clearAnswer: (questionId) => {
     set((s) => {
       const { [questionId]: _, ...rest } = s.answers;
@@ -71,6 +78,7 @@ export const useExamStore = create<ExamStore>()((set, get) => ({
     });
   },
 
+  // Toggle "marked for review" on/off for a question
   toggleMark: (questionId) => {
     set((s) => {
       const marked = s.markedForReview.includes(questionId)
@@ -80,6 +88,7 @@ export const useExamStore = create<ExamStore>()((set, get) => ({
     });
   },
 
+  // Navigate to the next question and mark it as visited
   next: () => {
     const { currentIndex, questions } = get();
     if (currentIndex < questions.length - 1) {
@@ -94,6 +103,7 @@ export const useExamStore = create<ExamStore>()((set, get) => ({
     }
   },
 
+  // Navigate to the previous question and mark it as visited
   prev: () => {
     const { currentIndex, questions } = get();
     if (currentIndex > 0) {
@@ -108,6 +118,7 @@ export const useExamStore = create<ExamStore>()((set, get) => ({
     }
   },
 
+  // Jump to a specific question by index (used by palette)
   goToQuestion: (index) => {
     const { questions } = get();
     if (index >= 0 && index < questions.length) {
@@ -121,10 +132,13 @@ export const useExamStore = create<ExamStore>()((set, get) => ({
     }
   },
 
+  // Flag the attempt as submitted (prevents re-submission)
   markSubmitted: () => set({ submitted: true }),
 
+  // Clear all state back to initial (used after submit)
   reset: () => set(initialState),
 
+  // Restore full state from sessionStorage snapshot
   hydrate: (state) => set(state),
 }));
 
@@ -137,6 +151,8 @@ export type QuestionStatus =
   | 'marked'
   | 'answered-marked';
 
+// Derives the visual status of a question from current state.
+// Used by PalettePanel to determine button colors.
 export function getQuestionStatus(
   questionId: string,
   answers: Record<string, string>,
@@ -158,6 +174,7 @@ export function getQuestionStatus(
 
 const STORAGE_KEY = 'exam-state';
 
+// Save current exam state to sessionStorage (called on every store change)
 export function persistToSession(state: ExamState): void {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -166,6 +183,7 @@ export function persistToSession(state: ExamState): void {
   }
 }
 
+// Attempt to restore exam state from sessionStorage (called on mount)
 export function restoreFromSession(): ExamState | null {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
@@ -176,6 +194,7 @@ export function restoreFromSession(): ExamState | null {
   }
 }
 
+// Remove persisted state after successful submission
 export function clearSession(): void {
   try {
     sessionStorage.removeItem(STORAGE_KEY);

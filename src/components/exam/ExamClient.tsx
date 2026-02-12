@@ -26,13 +26,17 @@ import { QuestionCard } from './QuestionCard';
 import { Controls } from './Controls';
 import { PalettePanel } from './PalettePanel';
 
+// ── Utility: compute seconds left from an ISO deadline string ──
 function getRemainingSeconds(endsAt: string | null): number {
   if (!endsAt) return 0;
   return Math.max(0, Math.floor((new Date(endsAt).getTime() - Date.now()) / 1000));
 }
 
+// ── Main exam-taking orchestrator: timer, submit, layout, persistence ──
 export function ExamClient() {
   const router = useRouter();
+
+  // ── Zustand store bindings ──
   const store = useExamStore();
   const {
     attemptId,
@@ -46,6 +50,7 @@ export function ExamClient() {
     reset,
   } = store;
 
+  // ── Local UI state ──
   const [remainingSeconds, setRemainingSeconds] = useState(() =>
     getRemainingSeconds(endsAt),
   );
@@ -57,7 +62,7 @@ export function ExamClient() {
     useDisclosure(false);
 
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const submittedRef = useRef(false);
+  const submittedRef = useRef(false); // prevents double-submit across renders
 
   // ── Restore from sessionStorage on mount ──
   useEffect(() => {
@@ -148,12 +153,15 @@ export function ExamClient() {
 
   const answeredCount = Object.keys(answers).length;
 
+  // ── Shared palette widget (used in sidebar and mobile drawer) ──
   const paletteContent = <PalettePanel />;
 
   return (
     <Stack gap={0} style={{ minHeight: '100vh' }}>
+      {/* ── Sticky header: timer + progress ── */}
       <Header remainingSeconds={remainingSeconds} />
 
+      {/* ── Main content: question + controls (left) and palette (right) ── */}
       <Grid gutter="md" p="md" style={{ flex: 1 }}>
         <Grid.Col span={{ base: 12, md: 9 }}>
           <Stack gap="md">
@@ -162,6 +170,7 @@ export function ExamClient() {
           </Stack>
         </Grid.Col>
 
+        {/* ── Desktop: palette sidebar ── */}
         {!isMobile && (
           <Grid.Col span={{ base: 12, md: 3 }}>
             <Card shadow="sm" padding="md" radius="md" withBorder>
@@ -171,6 +180,7 @@ export function ExamClient() {
         )}
       </Grid>
 
+      {/* ── Mobile: palette in a bottom drawer ── */}
       {isMobile && (
         <>
           <Button
@@ -193,7 +203,7 @@ export function ExamClient() {
         </>
       )}
 
-      {/* End Test Confirmation Modal */}
+      {/* ── End Test confirmation modal ── */}
       <Modal
         opened={modalOpened}
         onClose={closeModal}
