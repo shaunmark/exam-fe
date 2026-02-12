@@ -48,13 +48,13 @@ export function Header({ remainingSeconds }: HeaderProps) {
         </Group>
 
         <Group gap="md">
-          <Progress
+          {/* <Progress
             value={progressPct}
             size="sm"
             color={progressPct === 100 ? other.semantic.success : undefined}
             radius="xl"
             style={{ width: 120 }}
-          />
+          /> */}
           <Badge
             color={isUrgent ? other.semantic.danger : undefined}
             variant={isUrgent ? 'filled' : 'light'}
@@ -70,11 +70,13 @@ export function Header({ remainingSeconds }: HeaderProps) {
           </Badge>
         </Group>
       </Group>
-      <div
-        style={{
-          height: 2,
-          background: `linear-gradient(90deg, var(--mantine-color-${primaryColor}-5) ${progressPct}%, var(--mantine-color-${other.semantic.muted}-2) ${progressPct}%)`,
-        }}
+      <Progress
+        value={progressPct}
+        size={3}
+        radius={0}
+        color={progressPct === 100 ? other.semantic.success : undefined}
+        transitionDuration={500}
+        style={{ width: '100%' }}
       />
     </Stack>
   );
