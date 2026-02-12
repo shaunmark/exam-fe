@@ -138,7 +138,6 @@ export function ExamClient() {
     } catch {
       submittedRef.current = false;
       setSubmitError('Failed to submit. Please try again.');
-    } finally {
       setSubmitting(false);
     }
   }, [attemptId, questions, answers, markedForReview, markSubmitted, reset, router]);

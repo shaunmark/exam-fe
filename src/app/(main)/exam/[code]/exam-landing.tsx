@@ -49,7 +49,6 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
       router.push(`/exam/${code}/take`);
     } catch {
       setStartError(EXAM_LANDING.ERROR_START_FAILED);
-    } finally {
       setLoading(false);
     }
   };
