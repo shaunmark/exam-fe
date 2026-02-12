@@ -1,5 +1,6 @@
 import { apiFetch } from './api';
 import {
+  mockFetchExams,
   mockFetchExamByCode,
   mockStartAttempt,
   mockSubmitAttempt,
@@ -18,6 +19,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 // ── Full submit endpoint URL (used by sendBeacon for tab-close submission) ──
 export const SUBMIT_URL = `${BASE_URL}/attempt/submit`;
+
+// ── Fetch all available exams for the listing page ──
+export function fetchExams(): Promise<ExamMeta[]> {
+  if (USE_MOCKS) return mockFetchExams();
+  return apiFetch<ExamMeta[]>('/exam');
+}
 
 // ── Fetch exam metadata by its unique code ──
 export function fetchExamByCode(code: string): Promise<ExamMeta> {

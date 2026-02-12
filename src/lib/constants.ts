@@ -4,13 +4,17 @@ export const HOME = {
   TITLE: 'Exam Platform',
   TAGLINE:
     'Take timed exams, track your progress, and test your knowledge — all in one place.',
-  DEMO_CARD_TITLE: 'General Knowledge — Demo',
-  DEMO_CARD_DESCRIPTION: 'A quick 10-question demo to explore the platform.',
-  DEMO_CARD_BADGE: 'Free',
-  DEMO_CARD_QUESTIONS: '10 Questions',
-  DEMO_CARD_DURATION: '10 Minutes',
-  DEMO_CTA: 'Start Demo Exam',
-  FOOTER: 'More exams coming soon.',
+  CTA: 'Browse Exams',
+} as const;
+
+export const EXAM_LIST = {
+  TITLE: 'Available Exams',
+  SUBTITLE: 'Choose an exam to get started.',
+  EMPTY: 'No exams available at the moment. Check back later.',
+  ERROR: 'Failed to load exams. Please try again later.',
+  CARD_QUESTIONS: 'questions',
+  CARD_MINUTES: 'min',
+  CARD_CTA: 'Start Exam',
 } as const;
 
 export const EXAM_LANDING = {

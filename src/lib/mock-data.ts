@@ -5,15 +5,63 @@ import type {
   SubmitResponse,
 } from './types';
 
-const MOCK_EXAM_META: ExamMeta = {
-  id: 'exam-001',
-  code: 'DEMO2025',
-  title: 'General Knowledge — Demo Exam',
-  description:
-    'A 10-question demo exam to test the platform. Covers science, history, and geography.',
-  durationMinutes: 10,
-  totalQuestions: 10,
-};
+// ── Mock exam catalogue (used by listing + detail endpoints) ──
+const MOCK_EXAMS: ExamMeta[] = [
+  {
+    id: 'exam-001',
+    code: 'DEMO2025',
+    title: 'General Knowledge — Demo Exam',
+    description:
+      'A 10-question demo exam to test the platform. Covers science, history, and geography.',
+    durationMinutes: 10,
+    totalQuestions: 10,
+  },
+  {
+    id: 'exam-002',
+    code: 'MATH101',
+    title: 'Mathematics Fundamentals',
+    description:
+      'Test your basics in arithmetic, algebra, and geometry. Suitable for all levels.',
+    durationMinutes: 30,
+    totalQuestions: 20,
+  },
+  {
+    id: 'exam-003',
+    code: 'SCI200',
+    title: 'Science & Nature',
+    description:
+      'From physics to biology — how well do you know the natural world?',
+    durationMinutes: 20,
+    totalQuestions: 15,
+  },
+  {
+    id: 'exam-004',
+    code: 'HIST300',
+    title: 'World History',
+    description:
+      'Journey through key events that shaped the modern world.',
+    durationMinutes: 25,
+    totalQuestions: 15,
+  },
+  {
+    id: 'exam-005',
+    code: 'ENG150',
+    title: 'English Grammar & Vocabulary',
+    description:
+      'Assess your command of English with grammar, vocabulary, and comprehension questions.',
+    durationMinutes: 15,
+    totalQuestions: 20,
+  },
+  {
+    id: 'exam-006',
+    code: 'CS100',
+    title: 'Computer Science Basics',
+    description:
+      'Data structures, algorithms, and fundamental CS concepts.',
+    durationMinutes: 45,
+    totalQuestions: 25,
+  },
+];
 
 const MOCK_QUESTIONS: ExamQuestion[] = [
   {
@@ -132,16 +180,23 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export async function mockFetchExams(): Promise<ExamMeta[]> {
+  await delay(200);
+  return MOCK_EXAMS;
+}
+
 export async function mockFetchExamByCode(_code: string): Promise<ExamMeta> {
   await delay(200);
-  return { ...MOCK_EXAM_META, code: _code };
+  const found = MOCK_EXAMS.find((e) => e.code === _code);
+  return found ?? { ...MOCK_EXAMS[0], code: _code };
 }
 
 export async function mockStartAttempt(
   _examId: string,
 ): Promise<AttemptStartResponse> {
   await delay(200);
-  const endsAt = new Date(Date.now() + MOCK_EXAM_META.durationMinutes * 60 * 1000).toISOString();
+  const exam = MOCK_EXAMS.find((e) => e.id === _examId) ?? MOCK_EXAMS[0];
+  const endsAt = new Date(Date.now() + exam.durationMinutes * 60 * 1000).toISOString();
   return {
     attemptId: `attempt-${Date.now()}`,
     endsAt,
