@@ -39,7 +39,7 @@ export function AppHeader() {
 
           <Anchor
             component={Link}
-            href="/exams"
+            href="/exam"
             size="sm"
             fw={500}
             c="dimmed"
