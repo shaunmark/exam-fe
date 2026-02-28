@@ -16,7 +16,7 @@ import {
   List,
   useMantineTheme,
 } from '@mantine/core';
-import { startAttempt } from '@/lib/exam-api';
+import { startAttempt, getExamByCode } from '@/services/exam-api';
 import { useExamStore } from '@/store/useExamStore';
 import type { ExamMeta } from '@/lib/types';
 import { EXAM_LANDING } from '@/lib/constants';
@@ -40,11 +40,16 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
     setStartError(null);
 
     try {
-      const result = await startAttempt(exam.id);
+      // First start the attempt
+      const startResult = await startAttempt({ examCode: exam.code, userId: 'test-user' });
+      
+      // Then fetch the exam with questions
+      const examDetail = await getExamByCode(exam.code);
+      
       initialize({
-        attemptId: result.attemptId,
-        endsAt: result.endsAt,
-        questions: result.questions,
+        attemptId: startResult.attemptId,
+        endsAt: startResult.endsAt,
+        questions: examDetail.questions,
       });
       router.push(`/exam/${code}/take`);
     } catch {
@@ -92,7 +97,7 @@ export function ExamLanding({ code, exam, error }: ExamLandingProps) {
               <Divider orientation="vertical" />
               <Stack align="center" gap={2}>
                 <Text size="xl" fw={700} c={other.semantic.warning}>
-                  {exam.durationMinutes}
+                  {exam.durationMins}
                 </Text>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
                   {EXAM_LANDING.STAT_MINUTES}

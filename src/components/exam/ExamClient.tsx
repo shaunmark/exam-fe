@@ -20,7 +20,7 @@ import {
   restoreFromSession,
   clearSession,
 } from '@/store/useExamStore';
-import { submitAttempt, SUBMIT_URL } from '@/lib/exam-api';
+import { submitAttempt, SUBMIT_URL } from '@/services/exam-api';
 import type { AnswerPayload, SubmitPayload } from '@/lib/types';
 import { Header } from './Header';
 import { QuestionCard } from './QuestionCard';
@@ -123,9 +123,10 @@ export function ExamClient() {
     setSubmitting(true);
     setSubmitError(null);
 
+    
     const payload: AnswerPayload[] = questions.map((q) => ({
       questionId: q.id,
-      selectedOption: answers[q.id] ?? '',
+      selectedOption: answers[q.id] ?? null,
       isMarkedForReview: markedForReview.includes(q.id),
     }));
 

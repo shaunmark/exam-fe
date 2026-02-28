@@ -6,7 +6,7 @@ export interface ExamMeta {
   code: string;
   title: string;
   description: string;
-  durationMinutes: number;
+  durationMins: number;
   totalQuestions: number;
 }
 
@@ -25,17 +25,45 @@ export interface ExamQuestion {
   options: ExamOption[];
 }
 
+// ── API response types (from backend) ──
+export interface ApiQuestion {
+  id: string;
+  text: string;
+  optionA: string;
+  optionB: string;
+  optionC: string;
+  optionD: string;
+  /** Display order of the question (1-based). Questions are sorted by this field. */
+  order: number;
+  /** Points awarded for a correct answer. Defaults to 1 in the DB schema. */
+  marks: number;
+}
+
+export interface ApiExamDetail {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  durationMins: number;
+  totalQuestions: number;
+  questions: ApiQuestion[];
+}
+
 // ── Full exam detail (metadata + questions) ──
-export interface ExamDetail {
-  meta: ExamMeta;
+export interface ExamDetail extends ExamMeta {
   questions: ExamQuestion[];
+}
+
+// ── Payload for POST /attempt/start ──
+export interface StartAttemptPayload {
+  examCode: string;
+  userId: string;
 }
 
 // ── Response from POST /attempt/start ──
 export interface AttemptStartResponse {
   attemptId: string;
   endsAt: string; // ISO date string
-  questions: ExamQuestion[];
 }
 
 // ── Single answer sent in the submit payload ──

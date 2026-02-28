@@ -1,4 +1,4 @@
-import { fetchExamByCode } from '@/lib/exam-api';
+import { fetchExamMetaByCode } from '@/services/exam-api';
 import { EXAM_LANDING } from '@/lib/constants';
 import { ExamLanding } from './exam-landing';
 
@@ -13,7 +13,7 @@ export default async function ExamPage({ params }: ExamPageProps) {
   let error: string | null = null;
 
   try {
-    exam = await fetchExamByCode(code);
+    exam = await fetchExamMetaByCode(code);
   } catch {
     error = EXAM_LANDING.ERROR_LOAD_FAILED;
   }

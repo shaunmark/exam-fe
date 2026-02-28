@@ -11,7 +11,7 @@ import {
   Alert,
 } from '@mantine/core';
 import Link from 'next/link';
-import { fetchExams } from '@/lib/exam-api';
+import { fetchExams } from '@/services/exam-api';
 import { EXAM_LIST } from '@/lib/constants';
 import { semantic } from '@/lib/theme';
 
@@ -77,7 +77,7 @@ export default async function ExamsPage() {
                       {exam.totalQuestions} {EXAM_LIST.CARD_QUESTIONS}
                     </Badge>
                     <Badge variant="dot" color={semantic.warning}>
-                      {exam.durationMinutes} {EXAM_LIST.CARD_MINUTES}
+                      {exam.durationMins} {EXAM_LIST.CARD_MINUTES}
                     </Badge>
                   </Group>
 

@@ -1,7 +1,7 @@
-import { ApiError } from './types';
+import { ApiError } from '../lib/types';
 
 // ── Base URL from environment, falls back to localhost for local dev ──
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
 
 // ── Custom fetch options: allows `body` to be any serializable value ──
 interface FetchOptions extends Omit<RequestInit, 'body'> {
