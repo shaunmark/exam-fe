@@ -69,7 +69,7 @@ export interface AttemptStartResponse {
 // ── Single answer sent in the submit payload ──
 export interface AnswerPayload {
   questionId: string;
-  selectedOption: string;
+  selectedOption: string | null; // Allow null for unanswered questions
   isMarkedForReview: boolean;
 }
 
@@ -94,4 +94,50 @@ export class ApiError extends Error {
     super(`API Error ${status}: ${statusText}`);
     this.name = 'ApiError';
   }
+}
+
+// ── Excel Upload Types ──
+export interface ExcelUploadResponse {
+  message: string;
+  examsCreated: number;
+  examsSkipped?: number;
+  conflicts?: Array<{code: string, title: string}>;
+  details: Array<{
+    code: string;
+    id: string;
+    questionCount: number;
+  }>;
+}
+
+export interface ExcelConflictError {
+  message: string;
+  type: 'DATABASE_CONFLICTS' | 'ALL_DUPLICATES';
+  conflicts: Array<{code: string, title: string}>;
+  suggestion: string;
+}
+
+export class ExcelValidationError extends Error {
+  constructor(
+    public message: string,
+    public errors: string[],
+  ) {
+    super(`Excel Validation Error: ${message}`);
+    this.name = 'ExcelValidationError';
+  }
+}
+
+export interface ExcelSheetInfo {
+  name: string;
+  rowCount: number;
+  headers: string[];
+  hasRequiredColumns: boolean;
+  missingColumns?: string[];
+}
+
+export interface ExcelPreview {
+  fileName: string;
+  fileSize: number;
+  sheets: ExcelSheetInfo[];
+  isValid: boolean;
+  warnings: string[];
 }

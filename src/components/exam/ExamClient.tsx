@@ -136,7 +136,7 @@ export function ExamClient() {
       clearSession();
       reset();
       router.replace(`/exam/result/${attemptId}`);
-    } catch {
+    } catch (error) {
       submittedRef.current = false;
       setSubmitError('Failed to submit. Please try again.');
       setSubmitting(false);

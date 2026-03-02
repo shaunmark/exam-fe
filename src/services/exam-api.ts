@@ -7,7 +7,10 @@ import type {
   SubmitPayload,
   SubmitResponse,
   StartAttemptPayload,
+  ExcelUploadResponse,
+  ExcelConflictError,
 } from '../lib/types';
+import { ExcelValidationError } from '../lib/types';
 
 // ── Parse API response to our frontend format ──
 function parseApiExamDetail(apiExam: ApiExamDetail): ExamDetail {
@@ -72,4 +75,39 @@ export function submitAttempt(payload: SubmitPayload): Promise<SubmitResponse> {
     method: 'POST',
     body: payload,
   });
+}
+
+// ── Upload Excel file for exam data import ──
+export async function uploadExcelFile(file: File, conflictStrategy: 'error' | 'skip' | 'update' = 'error'): Promise<ExcelUploadResponse> {
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
+  
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${BASE_URL}/upload/excel?conflictStrategy=${conflictStrategy}`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => null);
+    
+    // Handle specific conflict errors
+    if (errorBody?.type === 'DATABASE_CONFLICTS' || errorBody?.type === 'ALL_DUPLICATES') {
+      const conflictError: ExcelConflictError = {
+        message: errorBody.message,
+        type: errorBody.type,
+        conflicts: errorBody.conflicts || [],
+        suggestion: errorBody.suggestion
+      };
+      throw new ExcelValidationError(conflictError.message, [conflictError.type, ...conflictError.conflicts.map((c: {code: string, title: string}) => c.code)]);
+    }
+    
+    throw new ExcelValidationError(
+      errorBody?.message || 'Upload failed',
+      errorBody?.errors || ['Unknown error occurred']
+    );
+  }
+
+  return response.json() as Promise<ExcelUploadResponse>;
 }

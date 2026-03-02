@@ -48,6 +48,18 @@ export function AppHeader() {
           >
             Exams
           </Anchor>
+
+          <Anchor
+            component={Link}
+            href="/upload"
+            size="sm"
+            fw={500}
+            c="dimmed"
+            underline="never"
+            style={{ letterSpacing: 0.3 }}
+          >
+            Upload
+          </Anchor>
         </Group>
 
         <ActionIcon
